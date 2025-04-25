@@ -137,7 +137,7 @@ func Encode(content string, level RecoveryLevel, size int) ([]byte, error) {
 
 	b, err := q.PNG(size)
 	if err != nil {
-		return q.PNG(len(b))
+		return nil, err
 	}
 	return b, nil
 }
@@ -217,15 +217,12 @@ func (q *QRCode) Image(size int) image.Image {
 
 // PNG returns a PNG image of the QRCode.
 func (q *QRCode) PNG(size int) ([]byte, error) {
-	img := q.Image(size)
-
-	encoder := png.Encoder{CompressionLevel: png.BestCompression}
-
+	img := q.Image(size)	
 	buf := new(bytes.Buffer)
+	encoder := png.Encoder{CompressionLevel: png.BestCompression}
 	err := encoder.Encode(buf, img)
-
 	if err != nil {
-		return nil, err
+		return q.PNG(len(buf.Bytes()))
 	}
 
 	return buf.Bytes(), nil
