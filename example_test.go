@@ -33,4 +33,14 @@ func TestExampleEncodeWithColourAndWithoutBorder(t *testing.T) {
 
 	err = q.WriteFile(256, "example2.png")
 	assert.NoError(t, err)
+	err = q.WriteFileWithoutSize("example3.png")
+	assert.NoError(t, err)
+}
+
+func TestExampleWriteFileWithoutSize(t *testing.T) {
+	filename := "example4.png"
+	if err := WriteFile(i9siDomain, Medium, 0, filename); err != nil {
+		err = os.Remove(filename)
+		assert.NoError(t, err)
+	}
 }
