@@ -67,13 +67,10 @@ func New(content string, level RecoveryLevel) (*QRCode, error) {
 
 	q := &QRCode{
 		Content: content,
-
 		Level:         level,
 		VersionNumber: chosenVersion.version,
-
 		ForegroundColor: color.Black,
 		BackgroundColor: color.White,
-
 		encoder: encoder,
 		data:    encoded,
 		version: *chosenVersion,
