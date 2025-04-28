@@ -31,8 +31,11 @@ type QRCode struct {
 
 // New returns a new QRCode.
 func New(content string, level RecoveryLevel) (*QRCode, error) {
-	encoders := []dataEncoderType{dataEncoderType1To9, dataEncoderType10To26,
-		dataEncoderType27To40}
+	encoders := []dataEncoderType{
+		dataEncoderType1To9, 
+		dataEncoderType10To26,
+		dataEncoderType27To40,
+	}
 
 	var (
 		encoder       *dataEncoder
@@ -64,13 +67,10 @@ func New(content string, level RecoveryLevel) (*QRCode, error) {
 
 	q := &QRCode{
 		Content: content,
-
 		Level:         level,
 		VersionNumber: chosenVersion.version,
-
 		ForegroundColor: color.Black,
 		BackgroundColor: color.White,
-
 		encoder: encoder,
 		data:    encoded,
 		version: *chosenVersion,
@@ -290,6 +290,19 @@ func (q *QRCode) encode() {
 			penalty = p
 		}
 	}
+}
+
+// WithColors sets the foreground and background colors of the QRCode.
+func (q *QRCode) WithColors(foreground, background color.Color) *QRCode {
+	q.ForegroundColor = foreground
+	q.BackgroundColor = background
+	return q
+}
+
+// WithNoBorder removes the border from the QRCode.
+func (q *QRCode) WithNoBorder() *QRCode {
+	q.DisableBorder = true
+	return q
 }
 
 func (q *QRCode) addTerminatorBits(numTerminatorBits int) {
