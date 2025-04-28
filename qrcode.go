@@ -292,6 +292,19 @@ func (q *QRCode) encode() {
 	}
 }
 
+// WithColors sets the foreground and background colors of the QRCode.
+func (q *QRCode) WithColors(foreground, background color.Color) *QRCode {
+	q.ForegroundColor = foreground
+	q.BackgroundColor = background
+	return q
+}
+
+// WithNoBorder removes the border from the QRCode.
+func (q *QRCode) WithNoBorder() *QRCode {
+	q.DisableBorder = true
+	return q
+}
+
 func (q *QRCode) addTerminatorBits(numTerminatorBits int) {
 	q.data.AppendNumBools(numTerminatorBits, false)
 }
