@@ -15,9 +15,14 @@ type regularSymbol struct {
 }
 
 var (
+	black = bitset.Black.Bool()
+	white = bitset.White.Bool()
+)
+
+var (
 	alignmentPatternCenter = [][]int{
-		{}, 
-		{}, 
+		{},
+		{},
 		{6, 18},
 		{6, 22},
 		{6, 26},
@@ -60,45 +65,45 @@ var (
 	}
 
 	finderPattern = [][]bool{
-		{false, false, false, false, false, false, false},
-		{false, true, true, true, true, true, false},
-		{false, true, false, false, false, true, false},
-		{false, true, false, false, false, true, false},
-		{false, true, false, false, false, true, false},
-		{false, true, true, true, true, true, false},
-		{false, false, false, false, false, false, false},
+		{black, black, black, black, black, black, black},
+		{black, white, white, white, white, white, black},
+		{black, white, black, black, black, white, black},
+		{black, white, black, black, black, white, black},
+		{black, white, black, black, black, white, black},
+		{black, white, white, white, white, white, black},
+		{black, black, black, black, black, black, black},
 	}
 
 	finderPatternSize = 7
 
 	finderPatternHorizontalBorder = [][]bool{
-		{true, true, true, true, true, true, true, true},
+		{white, white, white, white, white, white, white, white},
 	}
 
 	finderPatternVerticalBorder = [][]bool{
-		{true},
-		{true},
-		{true},
-		{true},
-		{true},
-		{true},
-		{true},
-		{true},
+		{white},
+		{white},
+		{white},
+		{white},
+		{white},
+		{white},
+		{white},
+		{white},
 	}
 
 	alignmentPattern = [][]bool{
-		{false, false, false, false, false},
-		{false, true, true, true, false},
-		{false, true, false, true, false},
-		{false, true, true, true, false},
-		{false, false, false, false, false},
+		{black, black, black, black, black},
+		{black, white, white, white, black},
+		{black, white, black, white, black},
+		{black, white, white, white, black},
+		{black, black, black, black, black},
 	}
 )
 
 func buildRegularSymbol(
-	version qrCodeVersion, 
+	version qrCodeVersion,
 	mask int,
-	data *bitset.Bitset, 
+	data *bitset.Bitset,
 	includeQuietZone bool,
 ) (*symbol, error) {
 	quietZoneSize := 0
@@ -161,7 +166,7 @@ func (m *regularSymbol) addAlignmentPatterns() {
 }
 
 func (m *regularSymbol) addTimingPatterns() {
-	value := true
+	value := white
 
 	for i := finderPatternSize + 1; i < m.size-finderPatternSize; i++ {
 		m.symbol.set(i, finderPatternSize-1, value)
@@ -197,7 +202,7 @@ func (m *regularSymbol) addFormatInfo() {
 		m.symbol.set(fpSize+1, m.size-fpSize+i-8, f.At(l-i))
 	}
 
-	m.symbol.set(fpSize+1, m.size-fpSize-1, true)
+	m.symbol.set(fpSize+1, m.size-fpSize-1, white)
 }
 
 func (m *regularSymbol) addVersionInfo() {
@@ -290,5 +295,5 @@ func (m *regularSymbol) addData() (bool, error) {
 		}
 	}
 
-	return true, nil
+	return black, nil
 }
