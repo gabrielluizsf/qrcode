@@ -31,8 +31,11 @@ type QRCode struct {
 
 // New returns a new QRCode.
 func New(content string, level RecoveryLevel) (*QRCode, error) {
-	encoders := []dataEncoderType{dataEncoderType1To9, dataEncoderType10To26,
-		dataEncoderType27To40}
+	encoders := []dataEncoderType{
+		dataEncoderType1To9, 
+		dataEncoderType10To26,
+		dataEncoderType27To40,
+	}
 
 	var (
 		encoder       *dataEncoder
