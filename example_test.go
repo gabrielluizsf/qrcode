@@ -27,11 +27,13 @@ func TestExampleEncodeWithColourAndWithoutBorder(t *testing.T) {
 	q, err := New(i9siDomain, Highest)
 	assert.NoError(t, err)
 
-	q.DisableBorder = true
-	q.ForegroundColor = color.RGBA{R: 0x44, G: 0x55, B: 0x66, A: 0xff}
-	q.BackgroundColor = color.RGBA{R: 0xef, G: 0xef, B: 0xef, A: 0xff}
+	foregroundColor := color.RGBA{R: 0x44, G: 0x55, B: 0x66, A: 0xff}
+	backgroundColor := color.RGBA{R: 0xef, G: 0xef, B: 0xef, A: 0xff}
 
-	err = q.WriteFile(256, "example2.png")
+	err = q.WithNoBorder().WithColors(
+		foregroundColor, 
+		backgroundColor,
+	).WriteFile(256, "example2.png")
 	assert.NoError(t, err)
 	err = q.WriteFileWithoutSize("example3.png")
 	assert.NoError(t, err)
