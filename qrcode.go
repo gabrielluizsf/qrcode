@@ -148,7 +148,9 @@ func WriteFile(content string, level RecoveryLevel, size int, filename string) e
 	if err != nil {
 		return err
 	}
-
+	if size == 0 {
+		return q.WriteFileWithoutSize(filename)
+	}
 	return q.WriteFile(size, filename)
 }
 
@@ -248,6 +250,13 @@ func (q *QRCode) WriteFile(size int, filename string) error {
 	}
 
 	return os.WriteFile(filename, png, os.FileMode(0644))
+}
+
+const DefaultFileSize = 256
+
+// WriteFileWithoutSize writes a PNG image of the QRCode without size.
+func (q *QRCode) WriteFileWithoutSize(filename string) error {
+	return q.WriteFile(DefaultFileSize, filename)
 }
 
 func (q *QRCode) encode() {
