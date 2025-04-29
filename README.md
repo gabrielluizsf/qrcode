@@ -22,20 +22,18 @@ import (
 )
 
 func main() {
-	qr, err := qrcode.NewWithForcedVersion(
+	qr, err := qrcode.New(
 		"https://www.i9sisistemas.com.br/",
-		11,
 		qrcode.Highest,
 	)
 	if err != nil {
 		log.Fatalf("Failed to create QR Code: %v", err)
 	}
 
-	qr.DisableBorder = true
-	qr.ForegroundColor = color.RGBA{0x00, 0x00, 0x00, 0xff}
-	qr.BackgroundColor = color.RGBA{0xef, 0xef, 0xef, 0xff}
-
-	if err := qr.WriteFile(256, "qrcode_example.png"); err != nil {
+	if err := qr.WithNoBorder().WithColors(
+		color.RGBA{0x00, 0x00, 0x00, 0xff},
+		color.RGBA{0xef, 0xef, 0xef, 0xff},
+	).WriteFileWithoutSize("qrcode_example.png"); err != nil {
 		log.Fatalf("Failed to save QR Code: %v", err)
 	}
 }
