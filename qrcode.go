@@ -32,7 +32,7 @@ type QRCode struct {
 // New returns a new QRCode.
 func New(content string, level RecoveryLevel) (*QRCode, error) {
 	encoders := []dataEncoderType{
-		dataEncoderType1To9, 
+		dataEncoderType1To9,
 		dataEncoderType10To26,
 		dataEncoderType27To40,
 	}
@@ -66,14 +66,14 @@ func New(content string, level RecoveryLevel) (*QRCode, error) {
 	}
 
 	q := &QRCode{
-		Content: content,
-		Level:         level,
-		VersionNumber: chosenVersion.version,
+		Content:         content,
+		Level:           level,
+		VersionNumber:   chosenVersion.version,
 		ForegroundColor: color.Black,
 		BackgroundColor: color.White,
-		encoder: encoder,
-		data:    encoded,
-		version: *chosenVersion,
+		encoder:         encoder,
+		data:            encoded,
+		version:         *chosenVersion,
 	}
 
 	return q, nil
@@ -135,11 +135,7 @@ func Encode(content string, level RecoveryLevel, size int) ([]byte, error) {
 		return nil, err
 	}
 
-	b, err := q.PNG(size)
-	if err != nil {
-		return nil, err
-	}
-	return b, nil
+	return q.PNG(size), nil
 }
 
 // Write writes a PNG image of the QRCode
@@ -218,8 +214,8 @@ func (q *QRCode) Image(size int) image.Image {
 }
 
 // PNG returns a PNG image of the QRCode.
-func (q *QRCode) PNG(size int) ([]byte, error) {
-	img := q.Image(size)	
+func (q *QRCode) PNG(size int) []byte {
+	img := q.Image(size)
 	buf := new(bytes.Buffer)
 	encoder := png.Encoder{CompressionLevel: png.BestCompression}
 	err := encoder.Encode(buf, img)
@@ -227,29 +223,21 @@ func (q *QRCode) PNG(size int) ([]byte, error) {
 		return q.PNG(len(buf.Bytes()))
 	}
 
-	return buf.Bytes(), nil
+	return buf.Bytes()
 }
 
 // Write writes a PNG image of the QRCode.
 func (q *QRCode) Write(size int, out io.Writer) error {
-	png, err := q.PNG(size)
-	if err != nil {
+	png := q.PNG(size)
+	if _, err := out.Write(png); err != nil {
 		return err
 	}
-	if _, err = out.Write(png); err != nil {
-		return err
-	}
-	return err
+	return nil
 }
 
 // WriteFile writes a PNG image of the QRCode.
 func (q *QRCode) WriteFile(size int, filename string) error {
-	png, err := q.PNG(size)
-	if err != nil {
-		return err
-	}
-
-	return os.WriteFile(filename, png, os.FileMode(0644))
+	return os.WriteFile(filename, q.PNG(size), os.FileMode(0644))
 }
 
 const DefaultFileSize = 256
