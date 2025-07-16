@@ -27,19 +27,20 @@ func newSymbol(size int, quietZoneSize int) *symbol {
 }
 
 func (m *symbol) get(x int, y int) (v bool) {
-	v = m.module[y+m.quietZoneSize][x+m.quietZoneSize]
+	v, _ = m.values(x, y)
 	return
 }
 
 func (m *symbol) empty(x int, y int) bool {
-	return !m.isUsed[y+m.quietZoneSize][x+m.quietZoneSize]
+	_, isUsed := m.values(x, y)
+	return !isUsed
 }
 
 func (m *symbol) numEmptyModules() int {
 	var count int
 	for y := range m.symbolSize {
 		for x := range m.symbolSize {
-			if !m.isUsed[y+m.quietZoneSize][x+m.quietZoneSize] {
+			if m.empty(x, y) {
 				count++
 			}
 		}
@@ -49,8 +50,14 @@ func (m *symbol) numEmptyModules() int {
 }
 
 func (m *symbol) set(x int, y int, v bool) {
-	m.module[y+m.quietZoneSize][x+m.quietZoneSize] = v
-	m.isUsed[y+m.quietZoneSize][x+m.quietZoneSize] = true
+	index := func(v int) int { return v + m.quietZoneSize }
+	m.module[index(y)][index(x)] = v
+	m.isUsed[index(y)][index(x)] = true
+}
+
+func (m *symbol) values(x, y int) (module, isUsed bool) {
+	index := func(v int) int { return v + m.quietZoneSize }
+	return m.module[index(y)][index(x)], m.isUsed[index(y)][index(x)]
 }
 
 func (m *symbol) set2dPattern(x int, y int, v [][]bool) {
