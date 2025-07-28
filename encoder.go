@@ -26,21 +26,21 @@ const (
 
 type segment struct {
 	dataMode dataMode
-	data []byte
+	data     []byte
 }
 
 type dataEncoder struct {
-	minVersion int
-	maxVersion int
-	numericModeIndicator      *bitset.Bitset
-	alphanumericModeIndicator *bitset.Bitset
-	byteModeIndicator         *bitset.Bitset
+	minVersion                   int
+	maxVersion                   int
+	numericModeIndicator         *bitset.Bitset
+	alphanumericModeIndicator    *bitset.Bitset
+	byteModeIndicator            *bitset.Bitset
 	numNumericCharCountBits      int
 	numAlphanumericCharCountBits int
 	numByteCharCountBits         int
-	data []byte
-	actual []segment
-	optimised []segment
+	data                         []byte
+	actual                       []segment
+	optimised                    []segment
 }
 
 func newDataEncoder(t dataEncoderType) *dataEncoder {
@@ -96,16 +96,13 @@ func (d *dataEncoder) encode(data []byte) (*bitset.Bitset, error) {
 		return nil, errors.New("no data to encode")
 	}
 
-	
 	highestRequiredMode := d.classifyDataModes()
 
-	
 	err := d.optimiseDataModes()
 	if err != nil {
 		return nil, err
 	}
 
-	
 	optimizedLength := 0
 	for _, s := range d.optimised {
 		length, err := d.encodedLength(s.dataMode, len(s.data))
@@ -124,7 +121,6 @@ func (d *dataEncoder) encode(data []byte) (*bitset.Bitset, error) {
 		d.optimised = []segment{{dataMode: highestRequiredMode, data: d.data}}
 	}
 
-	
 	encoded := bitset.New()
 	for _, s := range d.optimised {
 		d.encodeDataRaw(s.data, s.dataMode, encoded)
@@ -229,13 +225,10 @@ func (d *dataEncoder) encodeDataRaw(data []byte, dataMode dataMode, encoded *bit
 	modeIndicator := d.modeIndicator(dataMode)
 	charCountBits := d.charCountBits(dataMode)
 
-	
 	encoded.Append(modeIndicator)
 
-	
 	encoded.AppendUint32(uint32(len(data)), charCountBits)
 
-	
 	switch dataMode {
 	case dataModeNumeric:
 		for i := 0; i < len(data); i += 3 {
@@ -290,8 +283,6 @@ func (d *dataEncoder) modeIndicator(dataMode dataMode) *bitset.Bitset {
 	return nil
 }
 
-
-
 func (d *dataEncoder) charCountBits(dataMode dataMode) int {
 	switch dataMode {
 	case dataModeNumeric:
@@ -345,10 +336,10 @@ func encodeAlphanumericCharacter(v byte) uint32 {
 
 	switch {
 	case c >= '0' && c <= '9':
-		
+
 		return c - '0'
 	case c >= 'A' && c <= 'Z':
-		
+
 		return c - 'A' + 10
 	case c == ' ':
 		return 36
