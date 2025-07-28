@@ -46,14 +46,19 @@ type dataEncoder struct {
 func newDataEncoder(t dataEncoderType) *dataEncoder {
 	d := &dataEncoder{}
 	black, white := bitset.Black, bitset.White
+	var (
+		numericModeIndicator      = bitset.New(white, white, white, black)
+		alphanumericModeIndicator = bitset.New(white, white, black, white)
+		byteModeIndicator         = bitset.New(white, black, white, white)
+	)
 	switch t {
 	case dataEncoderType1To9:
 		d = &dataEncoder{
 			minVersion:                   1,
 			maxVersion:                   9,
-			numericModeIndicator:         bitset.New(white, white, white, black),
-			alphanumericModeIndicator:    bitset.New(white, white, black, white),
-			byteModeIndicator:            bitset.New(white, black, white, white),
+			numericModeIndicator:         numericModeIndicator,
+			alphanumericModeIndicator:    alphanumericModeIndicator,
+			byteModeIndicator:            byteModeIndicator,
 			numNumericCharCountBits:      10,
 			numAlphanumericCharCountBits: 9,
 			numByteCharCountBits:         8,
@@ -62,9 +67,9 @@ func newDataEncoder(t dataEncoderType) *dataEncoder {
 		d = &dataEncoder{
 			minVersion:                   10,
 			maxVersion:                   26,
-			numericModeIndicator:         bitset.New(white, white, white, black),
-			alphanumericModeIndicator:    bitset.New(white, white, black, white),
-			byteModeIndicator:            bitset.New(white, black, white, white),
+			numericModeIndicator:         numericModeIndicator,
+			alphanumericModeIndicator:    alphanumericModeIndicator,
+			byteModeIndicator:            byteModeIndicator,
 			numNumericCharCountBits:      12,
 			numAlphanumericCharCountBits: 11,
 			numByteCharCountBits:         16,
@@ -73,9 +78,9 @@ func newDataEncoder(t dataEncoderType) *dataEncoder {
 		d = &dataEncoder{
 			minVersion:                   27,
 			maxVersion:                   40,
-			numericModeIndicator:         bitset.New(white, white, white, black),
-			alphanumericModeIndicator:    bitset.New(white, white, black, white),
-			byteModeIndicator:            bitset.New(white, black, white, white),
+			numericModeIndicator:         numericModeIndicator,
+			alphanumericModeIndicator:    alphanumericModeIndicator,
+			byteModeIndicator:            byteModeIndicator,
 			numNumericCharCountBits:      14,
 			numAlphanumericCharCountBits: 13,
 			numByteCharCountBits:         16,
